@@ -1,0 +1,30 @@
+/* yes-no-dialog.component.scss or css */
+.dialog-title {
+    color: #6c757d; /* Primary color */
+    font-size: 24px;
+    font-weight: bold;
+    margin-bottom: 15px;
+  }
+  
+  .dialog-content {
+    font-size: 16px;
+    margin-bottom: 20px;
+  }
+  
+  .dialog-actions {
+    display: flex;
+    justify-content: flex-end;
+  }
+  
+  .no-button, .yes-button {
+    margin: 0 5px;
+  }
+  
+  .no-button {
+    color: #f44336; /* Red color for 'No' button */
+  }
+  
+  .yes-button {
+    color: #4caf50; /* Green color for 'Yes' button */
+  }
+  

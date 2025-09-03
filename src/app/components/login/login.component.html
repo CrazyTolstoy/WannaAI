@@ -1,0 +1,46 @@
+<div class="container d-flex justify-content-center align-items-center vh-100" (mouseenter)="keepOpen()" [class.opened]="opened">
+  <div class="top"></div>
+  <div class="bottom"></div>
+  
+  <div class="center card shadow p-4" style="min-width: 350px; max-width: 400px;">
+    <h2 class="text-center mb-4">Prijava korisnika</h2>
+
+    <!-- Use Angular's (ngSubmit) and template reference variable -->
+    <form (ngSubmit)="onSubmit()" #loginForm="ngForm">
+      <!-- Email Input with ngModel -->
+      <div class="mb-3">
+        <input 
+          type="email" 
+          class="form-control" 
+          name="email" 
+          [(ngModel)]="email" 
+          placeholder="Email"
+          required>
+      </div>
+
+      <!-- Password Input with Toggle -->
+      <div class="mb-3 password-container">
+        <!-- Bind the input type to the showPassword property -->
+        <input 
+          [type]="showPassword ? 'text' : 'password'" 
+          class="form-control" 
+          name="password" 
+          [(ngModel)]="password" 
+          placeholder="Lozinka"
+          required>
+        <!-- Bind the icon classes and add a click handler -->
+        <span class="password-toggle-icon" (click)="togglePasswordVisibility()">
+          <i class="fa-solid" [class.fa-eye]="!showPassword" [class.fa-eye-slash]="showPassword"></i>
+        </span>
+      </div>
+
+      <!-- Submit Button with form validation -->
+      <button 
+        type="submit" 
+        class="btn btn-primary w-100"
+        [disabled]="!loginForm.form.valid">
+        Prijava
+      </button>
+    </form>
+  </div>
+</div>

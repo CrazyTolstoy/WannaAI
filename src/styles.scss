@@ -1,0 +1,42 @@
+$primary: #2ec250; // This is Bootstrap's `.btn-success` green color. Adjust as needed.
+
+// Import Bootstrap's source files
+@import "../node_modules/@angular/material/prebuilt-themes/deeppurple-amber.css";
+@import 'bootstrap/scss/bootstrap';
+
+body{
+    margin:0px;
+}
+
+app-loading {
+    display: flex;
+    min-height: 500px;
+    height: 700px;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .loading-image{
+    width:500px;
+  }
+
+  
+
+html, body { height: 100%; }
+body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+
+span{
+  font-family: 'Open Sans', sans-serif !important;
+}
+
+
+.cdk-overlay-container{
+  z-index: 3000;
+}
+
+
+.map-container{
+  width:100% !important;
+    height: 100% !important;
+}
+

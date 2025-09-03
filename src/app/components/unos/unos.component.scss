@@ -1,0 +1,52 @@
+/* Hide the actual file input visually */
+.hidden-file-input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  border: 0;
+}
+
+/* Wrapper to help with positioning if needed */
+.custom-file-input-wrapper {
+  position: relative;
+  display: inline-block; /* Or block, depending on layout needs */
+  width: 100%; /* Take full width of its parent */
+}
+
+/* Style your custom button/label */
+.custom-file-upload-button {
+  display: flex; /* Use flexbox for icon and text alignment */
+  align-items: center; /* Vertically center items */
+  gap: 10px; /* Space between icon and text */
+  width: 100%; /* Make it take full width */
+  padding: 0.75rem 1rem;
+  border: 1px solid #cddfff;
+  border-radius: 6px;
+  background-color: #f9f9f9;
+  cursor: pointer;
+  font-size: 1rem;
+  color: #444444;
+  transition: all 0.3s ease;
+  justify-content: flex-start; /* Align content to the start */
+}
+
+.custom-file-upload-button i {
+  font-size: 1.2rem; /* Size for the upload icon */
+  color: #4154f1;
+}
+
+.custom-file-upload-button:hover {
+  border-color: #4154f1;
+  box-shadow: 0 0 5px rgba(65, 84, 241, 0.2);
+  background-color: #f0f3ff;
+}
+
+.custom-file-upload-button:focus {
+  outline: none;
+  border-color: #4154f1;
+  box-shadow: 0 0 0 0.25rem rgba(65, 84, 241, 0.25);
+}
