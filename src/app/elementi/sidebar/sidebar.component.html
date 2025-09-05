@@ -2,8 +2,8 @@
 
   <div class="d-flex align-items-center justify-content-between">
     <a href="http://localhost:4200/home" class="logo d-flex align-items-center">
-      <img src="../../../assets/logo.png" alt="">
-      <span class="d-lg-block" style="font-size: 16px;">Invoice parser </span>
+      <img src="../../../assets/logo-white.png" alt="">
+      <span class="d-lg-block" style="font-size: 16px;">WannaAI Platform </span>
     </a>
     <i class="bi bi-list toggle-sidebar-btn" (click)="toggleSidebar()"></i>
   </div><!-- End Logo -->
@@ -23,6 +23,12 @@
       <li class="nav-item">
         <a class="nav-link" [ngClass]="{'collapsed': activeItem !== 'pocetna'}" (click)="loadDashboard()">
           <i class="bi bi-grid"></i><span>Početna</span>
+        </a>
+      </li>
+
+      <li class="nav-item">
+        <a class="nav-link" [ngClass]="{'collapsed': activeItem !== 'narudzbe'}" (click)="loadNarudzba()">
+          <i class="bi bi-grid"></i><span>Narudžbe</span>
         </a>
       </li>
 

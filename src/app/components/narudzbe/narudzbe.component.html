@@ -1,0 +1,130 @@
+<section class="filters">
+  <form [formGroup]="filterForm" class="filters__form">
+    <!-- SEARCH -->
+    <div class="filters__field field--search">
+      <input formControlName="search" placeholder="Pretraga (kupac, artikal, SKU, ID)" />
+    </div>
+
+<!-- DATE FROM -->
+    <div class="filters__field field--from field-inline">
+      <label for="fromDate" class="form-label">Datum od</label>
+      <div class="input-group">
+        <input
+          id="fromDate"
+          class="form-control"
+          formControlName="from"
+          ngbDatepicker
+          #fromDp="ngbDatepicker"
+          [autoClose]="'outside'"
+          placeholder="dd.mm.yyyy"
+          (click)="fromDp.open()"
+          readonly
+        />
+        <button class="btn btn-outline-primary bi bi-calendar3" type="button" (click)="fromDp.toggle()"></button>
+      </div>
+    </div>
+
+    <!-- DATE TO -->
+    <div class="filters__field field--to field-inline">
+      <label for="toDate" class="form-label">Datum do</label>
+      <div class="input-group">
+        <input
+          id="toDate"
+          class="form-control"
+          formControlName="to"
+          ngbDatepicker
+          #toDp="ngbDatepicker"
+          [autoClose]="'outside'"
+          placeholder="dd.mm.yyyy"
+          (click)="toDp.open()"
+          readonly
+        />
+        <button class="btn btn-outline-primary bi bi-calendar3" type="button" (click)="toDp.toggle()"></button>
+      </div>
+    </div>
+    
+
+    <!-- SELECT (your icon-triggered multi-select) -->
+    <div class="filters__field field--status">
+      <div class="status-filter" (click)="$event.stopPropagation()" (keydown)="onStatusKeydown($event)">
+        <button
+          type="button"
+          class="icon-btn"
+          (click)="toggleStatus()"
+          [attr.aria-expanded]="statusOpen"
+          aria-haspopup="dialog"
+          aria-label="Filtriraj po statusu">
+          <svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M3 4h18l-7 8v6l-4 2v-8L3 4z"></path>
+          </svg>
+        </button>
+
+        <div class="dropdown" *ngIf="statusOpen" role="dialog" (click)="$event.stopPropagation()">
+          <div class="dropdown-header">Statusi narudžbe</div>
+          <div class="actions">
+            <button type="button" class="mini" (click)="clearStatuses()">Poništi</button>
+          </div>
+          <div class="checklist">
+            <label class="check" *ngFor="let s of statuses">
+              <input type="checkbox" [checked]="isChecked(s.value)" (change)="onStatusCheckboxChange($event, s.value)" />
+              <span>{{ s.label }}</span>
+            </label>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+  </form>
+</section>
+
+
+
+<section class="list">
+<div *ngIf="!filtered.length" class="empty">Nema narudžbi za prikaz.</div>
+
+
+<details class="row" *ngFor="let o of filtered">
+<summary class="row__summary">
+<div class="row__left">
+<span class="id">#{{ o.id }}</span>
+<span class="name">{{ o.customerName }}</span>
+<span class="date">{{ o.createdAt | date:'short' }}</span>
+<span class="status status--{{ o.status }}">{{ o.status }}</span>
+</div>
+<div class="row__right">
+<span class="total">Ukupno: {{ total(o) | number:'1.2-2' }} KM</span>
+<button class="potvrdi" (click)="$event.preventDefault(); potvrdi(o)" [disabled]="o.sentToWoo || loadingId===o.id">
+<span *ngIf="loadingId===o.id">Slanje...</span>
+<span *ngIf="loadingId!==o.id && !o.sentToWoo">Potvrdi</span>
+<span *ngIf="o.sentToWoo && loadingId!==o.id">Poslato ✓</span>
+</button>
+</div>
+</summary>
+
+
+<div class="row__content">
+<table class="items">
+<thead>
+<tr>
+<th>SKU</th>
+<th>Artikal</th>
+<th>Količina</th>
+<th>Cijena</th>
+<th>Iznos</th>
+</tr>
+</thead>
+<tbody>
+<tr *ngFor="let i of o.items">
+<td>{{ i.sku }}</td>
+<td>{{ i.name }}</td>
+<td>{{ i.quantity }}</td>
+<td>{{ i.price | number:'1.2-2' }}</td>
+<td>{{ (i.price * i.quantity) | number:'1.2-2' }}</td>
+</tr>
+</tbody>
+</table>
+<div *ngIf="o.note" class="note">Napomena: {{ o.note }}</div>
+</div>
+</details>
+</section>

@@ -1,0 +1,294 @@
+:host {
+  display: block;
+  padding: 16px;
+}
+
+/* -------- Filters layout -------- */
+.filters {
+  margin-bottom: 16px;
+}
+
+/* One row: Search | From | To | Status */
+.filters__form {
+  display: grid;
+  grid-template-columns: 1.2fr 0.6fr 0.6fr 56px;
+  grid-template-areas: "search from to status";
+  gap: 22px;
+  align-items: center;
+}
+
+/* place fields */
+.field--search { grid-area: search; }
+.field--from   { grid-area: from; }
+.field--to     { grid-area: to; }
+.field--status { grid-area: status; }
+
+/* direct children fill their grid cells */
+.filters__field {
+  width: 100%;
+}
+
+/* search input styling */
+.field--search input {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  box-sizing: border-box;
+}
+
+/* inline label + input-group */
+.field-inline {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+.field-inline .form-label {
+  margin: 0;
+  white-space: nowrap;
+  font-weight: 600;
+  color: #1e3a8a;
+}
+.field-inline .input-group {
+  flex: 1 1 auto;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  flex-wrap: nowrap;
+}
+.field-inline .input-group .form-control {
+  width: auto;
+  flex: 1 1 auto;
+  min-width: 0;
+}
+.field-inline .input-group .btn {
+  flex: 0 0 auto;
+  margin-left: 6px;
+}
+
+/* status icon (compact) */
+.status-filter {
+  position: relative;
+  justify-self: start;
+}
+.icon-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 38px;
+  height: 38px;
+  padding: 0;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  background: #1E3A8A;
+  color: #fff;
+  cursor: pointer;
+}
+.icon-btn svg {
+  fill: currentColor;
+}
+
+/* dropdown */
+.dropdown {
+  position: absolute;
+  top: calc(100% + 6px);
+  right: 0;
+  z-index: 30;
+  min-width: 240px;
+  background: #1E3A8A;
+  color: #fff;
+  border: 1px solid #333;
+  border-radius: 10px;
+  box-shadow: 0 10px 24px rgba(0,0,0,.25);
+  padding: 10px;
+}
+.dropdown-header {
+  font-size: 12px;
+  opacity: .85;
+  margin-bottom: 6px;
+}
+.actions {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+.mini {
+  font-size: 12px;
+  padding: 4px 8px;
+  border-radius: 6px;
+  border: 1px solid #444;
+  background: #2a2a2a;
+  color: #fff;
+  cursor: pointer;
+}
+.mini:hover {
+  background: #333;
+}
+.checklist {
+  display: grid;
+  gap: 6px;
+}
+.check {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.check input[type="checkbox"] {
+  width: 16px;
+  height: 16px;
+}
+
+/* Tablet: still one row, slightly narrower dates */
+@media (max-width: 1000px) {
+  .filters__form {
+    grid-template-columns: 1fr 200px 200px 42px;
+    gap: 10px;
+  }
+}
+
+/* Mobile: stack Search → From → To → Status */
+@media (max-width: 640px) {
+  .filters__form {
+    grid-template-columns: 1fr;
+    grid-template-areas:
+      "search"
+      "from"
+      "to"
+      "status";
+    gap: 10px;
+  }
+  .status-filter {
+    justify-self: start;
+  }
+}
+
+/* -------- List styles -------- */
+.list .empty {
+  opacity: .7;
+  padding: 24px;
+  text-align: center;
+  border: 2px dashed #eee;
+  border-radius: 12px;
+}
+
+.row {
+  border: 1px solid #eee;
+  border-radius: 12px;
+  margin-bottom: 8px;
+  overflow: hidden;
+}
+.row[open] {
+  box-shadow: 0 2px 12px rgba(0,0,0,.04);
+}
+
+.row__summary {
+  list-style: none;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 12px 16px;
+  cursor: pointer;
+}
+.row__summary::-webkit-details-marker {
+  display: none;
+}
+
+.row__left {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: center;
+}
+.id { font-weight: 600; }
+.name { opacity: .9; }
+.date { opacity: .6; }
+.status {
+  text-transform: uppercase;
+  font-size: 12px;
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: #f2f2f2;
+}
+.status--novo { background: #e6f4ff; }
+.status--u_toku { background: #fff4e5; }
+.status--zavrseno { background: #e9f7ef; }
+.status--otkazano { background: #fdecea; }
+
+.row__right {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.total { font-weight: 600; }
+
+button.potvrdi {
+  padding: 8px 14px;
+  border: none;
+  border-radius: 999px;
+  background: #1E3A8A;
+  color: #fff;
+  cursor: pointer;
+}
+button.potvrdi[disabled] {
+  opacity: .6;
+  cursor: not-allowed;
+}
+
+.row__content {
+  padding: 12px 16px 16px;
+  background: #fcfcfc;
+  border-top: 1px solid #f1f1f1;
+}
+
+.items {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+.items th,
+.items td {
+  text-align: left;
+  padding: 8px;
+  border-bottom: 1px solid #eee;
+}
+
+.note {
+  margin-top: 8px;
+  font-style: italic;
+  opacity: .8;
+}
+
+/* -------- Optional: timepicker cosmetics (if used) -------- */
+.ngb-tp {
+  width: 100%;
+}
+.custom-timepicker-container button {
+  background: none;
+  border: none;
+  color: #198754;
+  font-size: 1.2rem;
+}
+.custom-timepicker-container button:hover {
+  color: #157347;
+}
+.bi-calendar3 {
+  font-size: 1.2rem;
+  padding: 6px 10px;
+  background: #f8f9fa;
+  border-radius: 5px;
+}
+.bi-calendar3:hover {
+  background: #e9ecef;
+}
+.custom-timepicker-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: #f8f9fa;
+  padding: 10px;
+  border-radius: 8px;
+  border: 1px solid #ced4da;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}

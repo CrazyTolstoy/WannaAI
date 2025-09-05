@@ -28,11 +28,11 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { YesnoComponent } from './elementi/yesno/yesno.component';
 import { CustomDateParserFormatter } from './CustomDateParserFormatter';
-import { GoogleMapsModule } from '@angular/google-maps';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { DashboardComponent } from './components/dashboard/dashboard.component';
 import { LoginComponent } from './components/login/login.component';
 import { UnosComponent } from './components/unos/unos.component';
+import { NarudzbeComponent } from './components/narudzbe/narudzbe.component';
 
 @NgModule({
   declarations: [
@@ -41,7 +41,8 @@ import { UnosComponent } from './components/unos/unos.component';
     YesnoComponent,
     DashboardComponent,
     LoginComponent,
-    UnosComponent
+    UnosComponent,
+    NarudzbeComponent
   ],
   providers: [{ provide: NgbDateParserFormatter, useClass: CustomDateParserFormatter }],
   bootstrap: [AppComponent],
@@ -50,7 +51,6 @@ import { UnosComponent } from './components/unos/unos.component';
     FontAwesomeModule,
     NgbModule,
     FormsModule,
-    GoogleMapsModule,
     DropdownModule,
     HttpClientModule,
     HighchartsChartModule,
