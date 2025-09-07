@@ -1,10 +1,11 @@
 import { Component, HostListener, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { Subscription } from 'rxjs';
-import { WooCommerceService } from '../../services/woocommerce.service';
-import { mapLocalOrderToWoo } from '../../services/woocommerce.mapper';
-import { Order } from '../../models/order';
 import { NgbDateStruct } from '@ng-bootstrap/ng-bootstrap';
+
+import { Order } from '../../models/order';
+import { OrdersService, BackendOrder } from '../../services/orders.service';
+import { mapOrderFromBE } from '../../services/order.mapper';
 
 @Component({
   selector: 'app-narudzbe',
@@ -30,7 +31,7 @@ export class NarudzbeComponent implements OnInit, OnDestroy {
 
   private subs = new Subscription();
 
-  constructor(private fb: FormBuilder, private woo: WooCommerceService) {
+  constructor(private fb: FormBuilder, private ordersApi: OrdersService) {
     this.filterForm = this.fb.group({
       search: [''],
       statuses: [[] as string[]],
@@ -44,41 +45,7 @@ export class NarudzbeComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    // Mock data – replace with real data source
-    this.orders = [
-      {
-        id: 'N-1001',
-        customerName: 'Petar Petrović',
-        customerEmail: 'petar@example.com',
-        customerPhone: '+38760000000',
-        createdAt: new Date().toISOString(),
-        status: 'novo',
-        items: [
-          { sku: 'SKU-123', name: 'Majica', quantity: 2, price: 19.9 },
-          { sku: 'SKU-777', name: 'Kačket', quantity: 1, price: 12.5 }
-        ],
-        note: 'Isporuka posle 17h',
-        sentToWoo: false
-      },
-      {
-        id: 'N-1002',
-        customerName: 'Jelena Janković',
-        createdAt: new Date(Date.now() - 86400000).toISOString(),
-        status: 'u_toku',
-        items: [{ sku: 'SKU-999', name: 'Duks', quantity: 1, price: 35 }],
-        sentToWoo: true
-      },
-      {
-        id: 'N-1003',
-        customerName: 'Marko Marković',
-        createdAt: new Date(Date.now() - 2 * 86400000).toISOString(),
-        status: 'zavrseno',
-        items: [{ sku: 'SKU-222', name: 'Jakna', quantity: 1, price: 89.9 }],
-        sentToWoo: false
-      }
-    ];
-
-    this.applyFilters();
+    this.loadOrders();
     this.subs.add(this.filterForm.valueChanges.subscribe(() => this.applyFilters()));
   }
 
@@ -86,28 +53,49 @@ export class NarudzbeComponent implements OnInit, OnDestroy {
     this.subs.unsubscribe();
   }
 
+  // ---------- Data loading ----------
+  private loadOrders(): void {
+    const s = this.ordersApi.getAll().subscribe({
+      next: (list: BackendOrder[]) => {
+        this.orders = list.map(mapOrderFromBE);
+        this.applyFilters();
+      },
+      error: (err: unknown) => {
+        console.error('Greška pri učitavanju narudžbi', err);
+        alert('Greška pri učitavanju narudžbi.');
+      }
+    });
+    this.subs.add(s);
+  }
+
   // ---------- Status helpers ----------
   get selectedStatuses(): string[] {
     return this.filterForm.value.statuses ?? [];
   }
+
   isChecked(v: string): boolean {
     return this.selectedStatuses.includes(v);
   }
+
   toggleStatusValue(v: string, checked: boolean): void {
     const current = new Set(this.selectedStatuses);
     checked ? current.add(v) : current.delete(v);
     this.filterForm.patchValue({ statuses: Array.from(current) }, { emitEvent: true });
   }
+
   clearStatuses(): void {
     this.filterForm.patchValue({ statuses: [] }, { emitEvent: true });
   }
+
   toggleStatus(): void {
     this.statusOpen = !this.statusOpen;
   }
+
   @HostListener('document:click')
-  onDocClick() {
+  onDocClick(): void {
     if (this.statusOpen) this.statusOpen = false;
   }
+
   onStatusKeydown(e: KeyboardEvent): void {
     if (e.key === 'Escape' && this.statusOpen) {
       e.preventDefault();
@@ -118,6 +106,7 @@ export class NarudzbeComponent implements OnInit, OnDestroy {
       this.toggleStatus();
     }
   }
+
   onStatusCheckboxChange(e: Event, value: string): void {
     const target = e.target as HTMLInputElement | null;
     const checked = !!target?.checked;
@@ -133,18 +122,20 @@ export class NarudzbeComponent implements OnInit, OnDestroy {
   private toStruct(d: Date): NgbDateStruct {
     return { year: d.getFullYear(), month: d.getMonth() + 1, day: d.getDate() };
   }
+
   private getDefaultMonthRange(): { from: NgbDateStruct; to: NgbDateStruct } {
     const now = new Date();
     const first = new Date(now.getFullYear(), now.getMonth(), 1);
     const last  = new Date(now.getFullYear(), now.getMonth() + 1, 0);
     return { from: this.toStruct(first), to: this.toStruct(last) };
   }
+
   /** Convert NgbDateStruct|string to timestamp (local midnight). */
   private structToTime(s: NgbDateStruct | null | string): number {
     if (!s) return NaN;
     if (typeof s === 'string') {
       const t = new Date(s).getTime();
-      return isNaN(t) ? NaN : t;
+      return Number.isNaN(t) ? NaN : t;
     }
     const d = new Date(s.year, (s.month ?? 1) - 1, s.day ?? 1, 0, 0, 0, 0);
     return d.getTime();
@@ -163,8 +154,8 @@ export class NarudzbeComponent implements OnInit, OnDestroy {
     const fromTimeRaw = this.structToTime(from);
     const toTimeRaw   = this.structToTime(to);
 
-    const fromTime = isNaN(fromTimeRaw) ? -Infinity : fromTimeRaw;
-    const toTime   = isNaN(toTimeRaw) ? Infinity : (toTimeRaw + 24 * 60 * 60 * 1000 - 1); // include full "to" day
+    const fromTime = Number.isNaN(fromTimeRaw) ? -Infinity : fromTimeRaw;
+    const toTime   = Number.isNaN(toTimeRaw) ? Infinity : (toTimeRaw + 24 * 60 * 60 * 1000 - 1); // include full "to" day
     const selected = Array.isArray(statuses) ? statuses : [];
 
     this.filtered = this.orders.filter(o => {
@@ -183,24 +174,33 @@ export class NarudzbeComponent implements OnInit, OnDestroy {
     });
   }
 
-  // ---------- WooCommerce push ----------
+  // ---------- WooCommerce push via BE ----------
   potvrdi(order: Order): void {
     if (order.sentToWoo) return;
     this.loadingId = order.id;
 
-    const payload = mapLocalOrderToWoo(order);
-    this.subs.add(
-      this.woo.createOrder(payload).subscribe({
-        next: _ => {
-          order.sentToWoo = true;
-          this.loadingId = null;
-        },
-        error: err => {
-          console.error('WooCommerce error', err);
-          alert('Greška pri slanju u WooCommerce. Detalji u konzoli.');
-          this.loadingId = null;
-        }
-      })
-    );
+    const idNum = Number(order.id);
+    if (Number.isNaN(idNum)) {
+      alert('Nevalidan ID narudžbe.');
+      this.loadingId = null;
+      return;
+    }
+
+    const sub = this.ordersApi.sendToWoo(idNum).subscribe({
+      next: (updated: BackendOrder) => {
+        const mapped = mapOrderFromBE(updated);
+        const idx = this.orders.findIndex(o => o.id === order.id);
+        if (idx >= 0) this.orders[idx] = mapped;
+        this.applyFilters();
+        this.loadingId = null;
+      },
+      error: (err: unknown) => {
+        console.error('WooCommerce error', err);
+        alert('Greška pri slanju u WooCommerce. Detalji u konzoli.');
+        this.loadingId = null;
+      }
+    });
+
+    this.subs.add(sub);
   }
 }
