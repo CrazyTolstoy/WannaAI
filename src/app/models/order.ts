@@ -2,7 +2,7 @@ export interface OrderItem {
 sku: string;
 name: string;
 quantity: number;
-price: number; // per unit
+price: number; 
 }
 
 
@@ -14,7 +14,8 @@ id: string; // internal ID
 customerName: string;
 customerEmail?: string;
 customerPhone?: string;
-createdAt: string; // ISO string
+addresses?:string;
+createdAt: Date; // ISO string
 status: LocalOrderStatus;
 items: OrderItem[];
 note?: string;

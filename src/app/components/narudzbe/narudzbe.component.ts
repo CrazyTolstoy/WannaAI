@@ -1,6 +1,6 @@
 import { Component, HostListener, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
-import { Subscription } from 'rxjs';
+import { finalize, Subscription } from 'rxjs';
 import { NgbDateStruct } from '@ng-bootstrap/ng-bootstrap';
 
 import { Order } from '../../models/order';
@@ -17,6 +17,7 @@ export class NarudzbeComponent implements OnInit, OnDestroy {
   orders: Order[] = [];
   filtered: Order[] = [];
   loadingId: string | null = null;
+  isLoading = true;
 
   // Status dropdown state
   statusOpen = false;
@@ -54,19 +55,24 @@ export class NarudzbeComponent implements OnInit, OnDestroy {
   }
 
   // ---------- Data loading ----------
-  private loadOrders(): void {
-    const s = this.ordersApi.getAll().subscribe({
-      next: (list: BackendOrder[]) => {
-        this.orders = list.map(mapOrderFromBE);
-        this.applyFilters();
-      },
-      error: (err: unknown) => {
-        console.error('Greška pri učitavanju narudžbi', err);
-        alert('Greška pri učitavanju narudžbi.');
-      }
-    });
-    this.subs.add(s);
-  }
+private loadOrders(): void {
+  this.isLoading = true;
+
+  const s = this.ordersApi.getAll().pipe(
+    finalize(() => { this.isLoading = false; })
+  ).subscribe({
+    next: (list: BackendOrder[]) => {
+      this.orders = list.map(mapOrderFromBE);
+      this.applyFilters();
+    },
+    error: (err: unknown) => {
+      console.error('Greška pri učitavanju narudžbi', err);
+      alert('Greška pri učitavanju narudžbi.');
+    }
+  });
+
+  this.subs.add(s);
+}
 
   // ---------- Status helpers ----------
   get selectedStatuses(): string[] {
@@ -163,6 +169,7 @@ export class NarudzbeComponent implements OnInit, OnDestroy {
         !s ||
         o.id.toLowerCase().includes(s) ||
         o.customerName.toLowerCase().includes(s) ||
+        (o.addresses?.toLowerCase().includes(s) ?? false) || 
         o.items.some(i => i.name.toLowerCase().includes(s) || i.sku.toLowerCase().includes(s));
 
       const matchStatus = selected.length === 0 || selected.includes(o.status);

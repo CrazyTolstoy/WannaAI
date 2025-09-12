@@ -24,9 +24,7 @@
 .field--status { grid-area: status; }
 
 /* direct children fill their grid cells */
-.filters__field {
-  width: 100%;
-}
+.filters__field { width: 100%; }
 
 /* search input styling */
 .field--search input {
@@ -85,9 +83,7 @@
   color: #fff;
   cursor: pointer;
 }
-.icon-btn svg {
-  fill: currentColor;
-}
+.icon-btn svg { fill: currentColor; }
 
 /* dropdown */
 .dropdown {
@@ -103,16 +99,8 @@
   box-shadow: 0 10px 24px rgba(0,0,0,.25);
   padding: 10px;
 }
-.dropdown-header {
-  font-size: 12px;
-  opacity: .85;
-  margin-bottom: 6px;
-}
-.actions {
-  display: flex;
-  gap: 8px;
-  margin-bottom: 8px;
-}
+.dropdown-header { font-size: 12px; opacity: .85; margin-bottom: 6px; }
+.actions { display: flex; gap: 8px; margin-bottom: 8px; }
 .mini {
   font-size: 12px;
   padding: 4px 8px;
@@ -122,22 +110,10 @@
   color: #fff;
   cursor: pointer;
 }
-.mini:hover {
-  background: #333;
-}
-.checklist {
-  display: grid;
-  gap: 6px;
-}
-.check {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-.check input[type="checkbox"] {
-  width: 16px;
-  height: 16px;
-}
+.mini:hover { background: #333; }
+.checklist { display: grid; gap: 6px; }
+.check { display: flex; align-items: center; gap: 8px; }
+.check input[type="checkbox"] { width: 16px; height: 16px; }
 
 /* Tablet: still one row, slightly narrower dates */
 @media (max-width: 1000px) {
@@ -158,9 +134,7 @@
       "status";
     gap: 10px;
   }
-  .status-filter {
-    justify-self: start;
-  }
+  .status-filter { justify-self: start; }
 }
 
 /* -------- List styles -------- */
@@ -172,17 +146,19 @@
   border-radius: 12px;
 }
 
-.row {
+/* =============================================================================
+   ORDER CARD (renamed from .row to avoid Bootstrap conflicts)
+   ========================================================================== */
+.order {
   border: 1px solid #eee;
   border-radius: 12px;
   margin-bottom: 8px;
   overflow: hidden;
+  background: #fff;
 }
-.row[open] {
-  box-shadow: 0 2px 12px rgba(0,0,0,.04);
-}
+.order[open] { box-shadow: 0 2px 12px rgba(0,0,0,.04); }
 
-.row__summary {
+.order__summary {
   list-style: none;
   display: flex;
   align-items: center;
@@ -191,11 +167,9 @@
   padding: 12px 16px;
   cursor: pointer;
 }
-.row__summary::-webkit-details-marker {
-  display: none;
-}
+.order__summary::-webkit-details-marker { display: none; }
 
-.row__left {
+.order__left {
   display: flex;
   flex-wrap: wrap;
   gap: 12px;
@@ -216,7 +190,7 @@
 .status--zavrseno { background: #e9f7ef; }
 .status--otkazano { background: #fdecea; }
 
-.row__right {
+.order__right {
   display: flex;
   align-items: center;
   gap: 12px;
@@ -231,19 +205,17 @@ button.potvrdi {
   color: #fff;
   cursor: pointer;
 }
-button.potvrdi[disabled] {
-  opacity: .6;
-  cursor: not-allowed;
-}
+button.potvrdi[disabled] { opacity: .6; cursor: not-allowed; }
 
-.row__content {
+.order__content {
   padding: 12px 16px 16px;
   background: #fcfcfc;
   border-top: 1px solid #f1f1f1;
+  width: 100%;          /* <-- ensure full width on desktop */
 }
 
 .items {
-  width: 100%;
+  width: 100%;          /* <-- table spans the card */
   border-collapse: collapse;
   font-size: 14px;
 }
@@ -260,28 +232,86 @@ button.potvrdi[disabled] {
   opacity: .8;
 }
 
-/* -------- Optional: timepicker cosmetics (if used) -------- */
-.ngb-tp {
-  width: 100%;
+/* ===== Mobile card layout ===== */
+@media (max-width: 560px) {
+  .order__summary {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 10px;
+  }
+
+  .order__left {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+  }
+
+  .order__left .id { font-weight: 700; }
+  .order__left .name { font-size: 15px; }
+
+  .order__left .phone {
+    opacity: .85;
+    font-size: 14px;
+  }
+
+  .order__left .address {
+    white-space: normal;
+    line-height: 1.25;
+    color: #334155;
+  }
+
+  .order__left .date { font-size: 12px; opacity: .6; }
+
+  .order__left .status {
+    margin-top: 4px;
+    font-size: 11px;
+    align-self: flex-start;
+  }
+
+  .order__right {
+    width: 100%;
+    justify-content: space-between;  /* total left, button right */
+    gap: 8px;
+  }
+
+  .order__right .total { font-size: 16px; font-weight: 700; }
+
+  button.potvrdi {
+    padding: 10px 16px;
+    border-radius: 999px;
+  }
+
+  .items th,
+  .items td { padding: 8px 6px; }
 }
+
+/* Slightly larger phones / small tablets can use a two-column summary */
+@media (min-width: 561px) and (max-width: 820px) {
+  .order__summary {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    align-items: center;
+    gap: 12px;
+  }
+  .order__left { gap: 6px; }
+}
+
+/* -------- Optional: timepicker cosmetics (if used) -------- */
+.ngb-tp { width: 100%; }
 .custom-timepicker-container button {
   background: none;
   border: none;
   color: #198754;
   font-size: 1.2rem;
 }
-.custom-timepicker-container button:hover {
-  color: #157347;
-}
+.custom-timepicker-container button:hover { color: #157347; }
 .bi-calendar3 {
   font-size: 1.2rem;
   padding: 6px 10px;
   background: #f8f9fa;
   border-radius: 5px;
 }
-.bi-calendar3:hover {
-  background: #e9ecef;
-}
+.bi-calendar3:hover { background: #e9ecef; }
 .custom-timepicker-container {
   display: flex;
   justify-content: center;
@@ -292,3 +322,20 @@ button.potvrdi[disabled] {
   border: 1px solid #ced4da;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 }
+
+/* =============================================================================
+   TEMP COMPAT (if your template still uses .row): neutralize Bootstrap .row
+   Remove this block after you rename to .order / .order__*
+   ========================================================================== */
+details.row {
+  display: block !important;
+  margin-left: 0 !important;
+  margin-right: 0 !important;
+  width: 100%;
+  background: #fff;
+  border: 1px solid #eee;
+  border-radius: 12px;
+  overflow: hidden;
+}
+details.row[open] { box-shadow: 0 2px 12px rgba(0,0,0,.04); }
+

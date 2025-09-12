@@ -5,6 +5,7 @@ import { DashboardComponent } from '../../components/dashboard/dashboard.compone
 import { AuthService } from '../../services/auth.service';
 import { UnosComponent } from '../../components/unos/unos.component';
 import { NarudzbeComponent } from '../../components/narudzbe/narudzbe.component';
+import { ReklamacijeComponent } from '../../components/reklamacije/reklamacije.component';
 
 @Component({
  selector: 'app-sidebar',
@@ -59,6 +60,14 @@ export class SidebarComponent implements OnInit {
     this.setActive('narudzbe'); // Set 'unos' as active when this method is called
     const container = this.el.nativeElement.querySelector('#main');
     this.dynamicLoaderService.loadComponent(NarudzbeComponent, container);
+    this.toggleSidebar(); // Close the sidebar after loading the component
+ }
+
+ 
+ loadReklamacije(){
+    this.setActive('reklamacije'); // Set 'unos' as active when this method is called
+    const container = this.el.nativeElement.querySelector('#main');
+    this.dynamicLoaderService.loadComponent(ReklamacijeComponent, container);
     this.toggleSidebar(); // Close the sidebar after loading the component
  }
 

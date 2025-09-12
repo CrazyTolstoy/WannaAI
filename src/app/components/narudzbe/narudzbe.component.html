@@ -1,4 +1,7 @@
-<section class="filters">
+<app-loading *ngIf="isLoading" message="Učitavanje narudžbi..."></app-loading>
+
+
+<section class="filters" *ngIf="!isLoading">
   <form [formGroup]="filterForm" class="filters__form">
     <!-- SEARCH -->
     <div class="filters__field field--search">
@@ -80,30 +83,35 @@
 
 
 
-<section class="list">
+<section class="list"  *ngIf="!isLoading">
 <div *ngIf="!filtered.length" class="empty">Nema narudžbi za prikaz.</div>
 
 
-<details class="row" *ngFor="let o of filtered">
-<summary class="row__summary">
-<div class="row__left">
-<span class="id">#{{ o.id }}</span>
-<span class="name">{{ o.customerName }}</span>
-<span class="date">{{ o.createdAt | date:'dd.MM.yyyy HH:mm' }}</span>
-<span class="status status--{{ o.status }}">{{ o.status }}</span>
-</div>
-<div class="row__right">
-<span class="total">Ukupno: {{ total(o) | number:'1.2-2' }} KM</span>
-<button class="potvrdi" (click)="$event.preventDefault(); potvrdi(o)" [disabled]="o.sentToWoo || loadingId===o.id">
-<span *ngIf="loadingId===o.id">Slanje...</span>
-<span *ngIf="loadingId!==o.id && !o.sentToWoo">Potvrdi</span>
-<span *ngIf="o.sentToWoo && loadingId!==o.id">Poslato ✓</span>
-</button>
-</div>
+<details class="order" *ngFor="let o of filtered">
+<summary class="order__summary">
+  <div class="order__left">
+    <span class="id">#{{ o.id }}</span> 
+    <span class="name">{{ o.customerName }}</span>
+    <span class="phone">{{ o.customerPhone }}</span>
+    <span class="address">{{ o.addresses || '—' }}</span>
+    <span class="date">{{ o.createdAt | date:'dd.MM.yyyy HH:mm' }}</span>
+    <span class="status status--{{ o.status }}">{{ o.status }}</span>
+  </div>
+
+  <div class="order__right">
+    <span class="total">Ukupno: {{ total(o) | number:'1.2-2' }} KM</span>
+    <button class="potvrdi" (click)="$event.preventDefault(); potvrdi(o)"
+            [disabled]="o.sentToWoo || loadingId===o.id">
+      <span *ngIf="loadingId===o.id">Slanje...</span>
+      <span *ngIf="loadingId!==o.id && !o.sentToWoo">Potvrdi</span>
+      <span *ngIf="o.sentToWoo && loadingId!==o.id">Poslato ✓</span>
+    </button>
+  </div>
 </summary>
 
 
-<div class="row__content">
+
+<div class="order__content">
 <table class="items">
 <thead>
 <tr>

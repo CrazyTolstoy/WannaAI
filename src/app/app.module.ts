@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+import { LOCALE_ID, NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 
 import { AppRoutingModule } from './app-routing.module';
@@ -14,9 +14,10 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatListModule } from '@angular/material/list';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { MatButtonModule } from '@angular/material/button';
+import { registerLocaleData } from '@angular/common';
 
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations"; 
-import { NgbDateParserFormatter, NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import { NgbDateParserFormatter, NgbDatepickerI18n, NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { SidebarComponent } from './elementi/sidebar/sidebar.component';
 import { ButtonModule } from "primeng/button"; 
 import { SidebarModule } from "primeng/sidebar"; 
@@ -33,6 +34,13 @@ import { DashboardComponent } from './components/dashboard/dashboard.component';
 import { LoginComponent } from './components/login/login.component';
 import { UnosComponent } from './components/unos/unos.component';
 import { NarudzbeComponent } from './components/narudzbe/narudzbe.component';
+import localeSrLatn from '@angular/common/locales/sr-Latn';
+import { SrDatepickerI18n } from './sr-datepicker-i18n';
+import { ReklamacijeComponent } from './components/reklamacije/reklamacije.component';
+import { LoadingComponent } from './elementi/loading/loading.component';
+
+registerLocaleData(localeSrLatn, 'sr-Latn-RS');
+
 
 @NgModule({
   declarations: [
@@ -42,9 +50,15 @@ import { NarudzbeComponent } from './components/narudzbe/narudzbe.component';
     DashboardComponent,
     LoginComponent,
     UnosComponent,
-    NarudzbeComponent
+    NarudzbeComponent,
+    ReklamacijeComponent,
+    LoadingComponent
   ],
-  providers: [{ provide: NgbDateParserFormatter, useClass: CustomDateParserFormatter }],
+    providers: [
+    { provide: LOCALE_ID, useValue: 'sr-Latn-RS' },            // or 'sr-RS' for Cyrillic
+    { provide: NgbDatepickerI18n, useClass: SrDatepickerI18n }, // labels (Pon/… & meseci)
+    { provide: NgbDateParserFormatter, useClass: CustomDateParserFormatter }, // dd.MM.yyyy
+  ],
   bootstrap: [AppComponent],
   imports: [
     BrowserModule,
